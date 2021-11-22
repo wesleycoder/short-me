@@ -1,0 +1,8 @@
+.container {
+  display: flex;
+  min-width: 500px;
+  max-width: 80vw;
+  min-height: 100vh;
+  margin: 0 auto;
+  align-items: flex-start;
+}
