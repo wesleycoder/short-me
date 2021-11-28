@@ -1,23 +1,39 @@
-import type { NextPage, NextPageContext } from "next";
+import type { GetStaticProps, NextPage } from "next";
+import { connectDB, db, HashedUrl } from "../../db";
 import { useRouter } from "next/dist/client/router";
 
-const Redirect: NextPage = () => {
-  const router = useRouter()
-  const { hash } = router.query
-  if (typeof window === "undefined") {
-    (window as typeof globalThis).location.href = "https://google.com.br";
+const Redirect: NextPage<{ destination: string }> = ({ destination }) => {
+  const router = useRouter();
+
+  if (typeof window !== "undefined") {
+    const redirectTo = router.isFallback ? "/" : destination;
+    (window as typeof globalThis).location.href = redirectTo;
   }
   return null;
 };
 
-Redirect.getInitialProps = (ctx: NextPageContext) => {
-  const { hash } = ctx.query
-  if (ctx.res) {
-    ctx.res.writeHead(302, { Location: "https://google.com" });
-    ctx.res.end();
-  }
+export const getStaticPaths = async () => {
+  await connectDB();
+  return {
+    paths: db.data!.urls.map((url) => `/${url.hash}`),
+    fallback: true,
+  };
+};
 
-  return {};
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  await connectDB();
+  const existingUrl = db.chain.get("urls").find((url: HashedUrl) =>
+    url.hash === ctx.params!.hash
+  ).value();
+  return {
+    redirect: {
+      destination: existingUrl?.url ?? "/",
+      permanent: false,
+    },
+    props: {
+      destination: existingUrl?.url ?? "/",
+    },
+  };
 };
 
 export default Redirect;
