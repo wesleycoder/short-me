@@ -35,6 +35,16 @@
 .input {
   border-radius: 15px 0 0 15px;
   background-color: antiquewhite;
+  outline: none;
+}
+
+.input:focus {
+  background-color: white;
+  outline: 1px solid bisque;
+}
+
+.input.invalid {
+  outline: 2px solid red !important;
 }
 
 .button {
