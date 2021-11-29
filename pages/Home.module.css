@@ -14,7 +14,8 @@
 }
 
 .label {
-  margin: 0.65rem 0;
+  margin: 2rem 0;
+  text-align: center;
 }
 
 .form {
@@ -31,7 +32,7 @@
 .button {
   border: none;
   font-size: 1.5rem;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .input {
@@ -45,7 +46,8 @@
 }
 
 .input.invalid {
-  outline: 2px solid red !important;
+  outline: 2px solid crimson;
+  background-color: mistyrose;
 }
 
 .button {

@@ -41,15 +41,16 @@ const Home: NextPage<HomeProps> = ({ host }) => {
 
   return (
     <>
-      <Header />
-      <div className={styles.container}>
-        <Head>
-          <title>Short me</title>
-          <meta name="description" content="Link shortener" />
-          <link rel="icon" href="/short.png" />
-        </Head>
+      <Head>
+        <title>Short me</title>
+        <meta name="description" content="Link shortener" />
+        <link rel="icon" href="/short.png" />
+      </Head>
 
-        <h1 className={styles.title}>Short me</h1>
+      <Header />
+
+      <div className={styles.container}>
+        <h1 className={styles.title} title="Short me">(🩳) me</h1>
 
         <form
           action="/api/shorten"
