@@ -2,7 +2,7 @@ import clsx from "clsx";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
-import { Navbar, TextInput } from "../components/atoms";
+import { Navbar, TextInput } from "../components";
 import { getRequestHostUrl, validateUrl } from "../utils";
 import styles from "./Home.module.css";
 
