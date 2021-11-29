@@ -1,4 +1,4 @@
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 import {
   ChangeEvent,
   ComponentProps,
@@ -21,16 +21,14 @@ interface TextInputProps extends ComponentProps<"input"> {
 
 type InputChangeEvent = ChangeEvent<HTMLInputElement>;
 
-const useDebouncedOnChange = (
+const useThrottledOnChange = (
   onChange: EventHandler<InputChangeEvent>,
-  debounceTime: number = 300,
+  delay: number = 300,
   onAllChanges: EventHandler<InputChangeEvent> = () => {},
 ) => {
   const handler = useMemo(() =>
-    debounce(onChange, debounceTime, {
-      trailing: true,
-    }), [
-    debounceTime,
+    throttle(onChange, delay), [
+    delay,
     onChange,
   ]);
 
@@ -42,7 +40,7 @@ const useDebouncedOnChange = (
     [handler, onAllChanges],
   );
 
-  useEffect(() => () => handler.cancel(), [handler]);
+  useEffect(() => handler.cancel, [handler]);
 
   return handleAll;
 };
@@ -51,7 +49,7 @@ export function TextInput(
   {
     type = "text",
     defaultValue = "",
-    delay = 300,
+    delay = 500,
     validate = () => true,
     onChangeText = () => {},
     onValidate = () => {},
@@ -61,7 +59,7 @@ export function TextInput(
 ) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isValid, setIsValid] = useState(
-    () => (defaultValue ? validate(defaultValue) : true)
+    () => (defaultValue ? validate(defaultValue) : true),
   );
 
   const onChange: EventHandler<InputChangeEvent> = useCallback(
@@ -84,23 +82,28 @@ export function TextInput(
         inputRef.current?.focus();
       }
     },
-    [autoFocus]
-  )
+    [autoFocus],
+  );
+
+  const throttledValidate = useMemo(
+    () => throttle(onValidate, delay, { leading: false }),
+    [delay, onValidate],
+  );
 
   const onAllChanges: EventHandler<InputChangeEvent> = useCallback(
     ({ target: { value } }: InputChangeEvent) => {
       const valid = validate(value);
 
       if (isValid !== valid) {
-        onValidate(valid);
+        throttledValidate(valid);
       }
 
       setIsValid(valid);
     },
-    [isValid, onValidate, validate],
+    [throttledValidate, isValid, validate],
   );
 
-  const debouncedHandler = useDebouncedOnChange(onChange, delay, onAllChanges);
+  const debouncedHandler = useThrottledOnChange(onChange, delay, onAllChanges);
 
   return (
     <input
