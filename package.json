@@ -8,6 +8,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/valid-url": "^1.0.3",
+    "clsx": "^1.1.1",
     "is-domain-valid": "^1.2.0",
     "is-url": "^1.2.4",
     "lodash": "^4.17.21",

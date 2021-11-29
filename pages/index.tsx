@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
@@ -26,7 +27,7 @@ const Home: NextPage<HomeProps> = ({ host }) => {
 
   const onSubmit = useCallback(async (e) => {
     e.preventDefault();
-    if (validateUrl(url)) {
+    if (validateUrl(url, true)) {
       await fetch("/api/shorten", {
         method: "POST",
         headers: {
@@ -60,16 +61,15 @@ const Home: NextPage<HomeProps> = ({ host }) => {
           <TextInput
             name="url"
             type="url"
-            defaultValue={url}
+            required
             autoFocus
-            className={[styles.input, !isValid && styles.invalid].filter(
-              Boolean,
-            ).join(" ")}
+            defaultValue={url}
             onChangeText={setUrl}
             onValidate={setIsValid}
             validate={validateUrl}
             placeholder={placeholder}
-          />
+            className={clsx(styles.input, !isValid && styles.invalid)}
+            />
           <button disabled={!isValid} type="submit" className={styles.button}>
             Shorten
           </button>
