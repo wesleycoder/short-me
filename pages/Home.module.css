@@ -39,8 +39,7 @@
 }
 
 .input:focus {
-  background-color: white;
-  outline: 1px solid bisque;
+  outline: 1px solid burlywood;
 }
 
 .input.invalid {

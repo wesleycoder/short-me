@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -54,9 +55,11 @@ export function TextInput(
     validate = () => true,
     onChangeText = () => {},
     onValidate = () => {},
+    autoFocus = false,
     ...props
   }: TextInputProps,
 ) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isValid, setIsValid] = useState(
     () => (defaultValue ? validate(defaultValue) : true)
   );
@@ -74,6 +77,15 @@ export function TextInput(
     },
     [isValid],
   );
+
+  useEffect(
+    () => {
+      if (autoFocus) {
+        inputRef.current?.focus();
+      }
+    },
+    [autoFocus]
+  )
 
   const onAllChanges: EventHandler<InputChangeEvent> = useCallback(
     ({ target: { value } }: InputChangeEvent) => {
@@ -93,6 +105,8 @@ export function TextInput(
   return (
     <input
       {...props}
+      ref={inputRef}
+      autoFocus={autoFocus}
       formNoValidate
       type={type}
       defaultValue={defaultValue}

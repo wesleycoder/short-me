@@ -61,6 +61,7 @@ const Home: NextPage<HomeProps> = ({ host }) => {
             name="url"
             type="url"
             defaultValue={url}
+            autoFocus
             className={[styles.input, !isValid && styles.invalid].filter(
               Boolean,
             ).join(" ")}

@@ -1,6 +1,6 @@
 import type { GetStaticProps, NextPage } from "next";
-import { connectDB, db, HashedUrl } from "../../db";
 import { useRouter } from "next/dist/client/router";
+import { connectDB, db, HashedUrl } from "../../db";
 
 const Redirect: NextPage<{ destination: string }> = ({ destination }) => {
   const router = useRouter();
