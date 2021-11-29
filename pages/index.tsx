@@ -3,6 +3,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import { TextInput } from "../components/atoms";
+import { Header } from "../components/atoms/Header";
 import { getRequestHostUrl, validateUrl } from "../utils";
 import styles from "./Home.module.css";
 
@@ -39,43 +40,47 @@ const Home: NextPage<HomeProps> = ({ host }) => {
   }, [url]);
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Short me</title>
-        <meta name="description" content="Link shortener" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <Header />
+      <div className={styles.container}>
+        <Head>
+          <title>Short me</title>
+          <meta name="description" content="Link shortener" />
+          <link rel="icon" href="/short.png" />
+        </Head>
 
-      <h1 className={styles.title}>Short me</h1>
-      <form
-        action="/api/shorten"
-        method="POST"
-        noValidate
-        onSubmit={onSubmit}
-        className={styles.form}
-      >
-        <label htmlFor="url" className={styles.label}>
-          Paste your link below and we&#39;ll shorten it for you:
-        </label>
-        <div className={styles.formGroup}>
-          <TextInput
-            name="url"
-            type="url"
-            required
-            autoFocus
-            defaultValue={url}
-            onChangeText={setUrl}
-            onValidate={setIsValid}
-            validate={validateUrl}
-            placeholder={placeholder}
-            className={clsx(styles.input, !isValid && styles.invalid)}
+        <h1 className={styles.title}>Short me</h1>
+
+        <form
+          action="/api/shorten"
+          method="POST"
+          noValidate
+          onSubmit={onSubmit}
+          className={styles.form}
+        >
+          <label htmlFor="url" className={styles.label}>
+            Paste your link below and we&#39;ll shorten it for you:
+          </label>
+          <div className={styles.formGroup}>
+            <TextInput
+              name="url"
+              type="url"
+              required
+              autoFocus
+              defaultValue={url}
+              onChangeText={setUrl}
+              onValidate={setIsValid}
+              validate={validateUrl}
+              placeholder={placeholder}
+              className={clsx(styles.input, !isValid && styles.invalid)}
             />
-          <button disabled={!isValid} type="submit" className={styles.button}>
-            Shorten
-          </button>
-        </div>
-      </form>
-    </div>
+            <button disabled={!isValid} type="submit" className={styles.button}>
+              Shorten
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 
