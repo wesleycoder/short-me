@@ -2,8 +2,7 @@ import clsx from "clsx";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
-import { TextInput } from "../components/atoms";
-import { Header } from "../components/atoms/Header";
+import { Navbar, TextInput } from "../components/atoms";
 import { getRequestHostUrl, validateUrl } from "../utils";
 import styles from "./Home.module.css";
 
@@ -47,7 +46,7 @@ const Home: NextPage<HomeProps> = ({ host }) => {
         <link rel="icon" href="/short.png" />
       </Head>
 
-      <Header />
+      <Navbar />
 
       <div className={styles.container}>
         <h1 className={styles.title} title="Short me">(🩳) me</h1>
