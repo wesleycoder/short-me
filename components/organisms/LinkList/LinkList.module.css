@@ -1,0 +1,15 @@
+.linkList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-flow: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.linkList li {
+  margin: 0.5rem 1rem;
+}
