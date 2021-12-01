@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-interface TextInputProps extends ComponentProps<"input"> {
+interface Props extends ComponentProps<"input"> {
   delay?: number;
   defaultValue?: string;
   validate?: (value: string) => boolean;
@@ -55,7 +55,7 @@ export function TextInput(
     onValidate = () => {},
     autoFocus = false,
     ...props
-  }: TextInputProps,
+  }: Props,
 ) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isValid, setIsValid] = useState(

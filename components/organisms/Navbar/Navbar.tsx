@@ -7,7 +7,7 @@ const isLoggedIn = false;
 export const Navbar = () => (
   <div className={styles.navbar}>
     <Link href="/" passHref>
-      <a className={styles.logo}>
+      <a className={styles.logo} title="Short me">
         🩳 Short me
       </a>
     </Link>
