@@ -14,7 +14,7 @@ export const LinkList = ({ links = [], ...props }: Props) => {
     <ul {...props} className={styles.linkList}>
       {links.map(({ url, hash }) => (
         <li key={hash}>
-          <Link href={hash}>{hash}</Link>
+          <Link href={`/${hash}`}>{hash}</Link>
           <br />
           {url}
         </li>

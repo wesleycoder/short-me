@@ -11,6 +11,9 @@
 
 .title {
   margin: 0;
+  cursor: default;
+  user-select: none;
+  font-size: 7rem;
 }
 
 .label {
@@ -23,34 +26,40 @@
   flex-direction: column;
 }
 
-.formGroup {
+.form .formGroup {
   display: flex;
   justify-content: center;
 }
 
-.input,
-.button {
+.form .input,
+.form .button {
   border: none;
   font-size: 1.5rem;
   padding: 1rem;
 }
 
-.input {
+.form .input {
   border-radius: 15px 0 0 15px;
   background-color: antiquewhite;
   outline: none;
+  min-width: 360px;
 }
 
-.input:focus {
+.form .input:focus {
   outline: 1px solid burlywood;
 }
 
-.input.invalid {
+.form .input.invalid {
   outline: 2px solid crimson;
   background-color: mistyrose;
 }
 
-.button {
+.form .button {
   border-radius: 0 15px 15px 0;
   background-color: burlywood;
+}
+
+.linksTitle {
+  margin: 2rem 0 1rem 0;
+  align-self: flex-start;
 }

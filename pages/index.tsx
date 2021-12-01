@@ -1,26 +1,30 @@
 import clsx from "clsx";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Navbar, TextInput } from "../components";
+import { LinkList } from "../components/organisms/LinkList/LinkList";
 import { getRequestHostUrl, validateUrl } from "../utils";
+import { useHostURL } from "../utils/hooks/useHostUrl";
 import styles from "./Home.module.css";
 
-interface HomeProps {
+interface Props {
   host?: string;
 }
 
-const useHostURL = (defaultHost: string = "https://short.me") => {
-  const [host, setHost] = useState(defaultHost);
+const mockLinks = [
+  { url: "yt.com", hash: "asdf1234" },
+  { url: "yt.com", hash: "asdf1234" },
+  { url: "google.com", hash: "abcd1234" },
+  { url: "yt.com", hash: "asdf1234" },
+  { url: "yt.com", hash: "asdf1234" },
+  { url: "google.com", hash: "abcd1234" },
+  { url: "yt.com", hash: "asdf1234" },
+  { url: "yt.com", hash: "asdf1234" },
+  { url: "google.com", hash: "abcd1234" },
+];
 
-  useEffect(() => {
-    setHost(window?.location?.href || defaultHost);
-  }, [defaultHost]);
-
-  return host;
-};
-
-const Home: NextPage<HomeProps> = ({ host }) => {
+const Home: NextPage<Props> = ({ host }) => {
   const placeholder = useHostURL(host);
   const [url, setUrl] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -79,6 +83,19 @@ const Home: NextPage<HomeProps> = ({ host }) => {
             </button>
           </div>
         </form>
+
+        {mockLinks.length && (
+          <>
+            <h2 className={styles.linksTitle}>Popular public links:</h2>
+            <LinkList className={styles.linkList} links={mockLinks} />
+          </>
+        )}
+        {mockLinks.length && (
+          <>
+            <h2 className={styles.linksTitle}>Your recent links:</h2>
+            <LinkList className={styles.linkList} links={mockLinks} />
+          </>
+        )}
       </div>
     </>
   );
