@@ -1,6 +1,6 @@
 import type { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/dist/client/router";
-import { connectDB, db, HashedUrl } from "../../db";
+import { db, HashedUrl } from "../../db";
 
 const Redirect: NextPage<{ destination: string }> = ({ destination }) => {
   const router = useRouter();
@@ -13,19 +13,21 @@ const Redirect: NextPage<{ destination: string }> = ({ destination }) => {
 };
 
 export const getStaticPaths = async () => {
-  await connectDB();
+  const urls = await db.collection<"urls">("urls");
+
   return {
-    paths: db.data!.urls.map((url) => `/${url.hash}`),
+    paths: urls.map((url) => `/${url.hash}`).value(),
     fallback: true,
   };
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  await connectDB();
-  const existingUrl = db.chain.get("urls").find((url: HashedUrl) =>
-    url.hash === ctx.params!.hash
-  ).value();
-  return {
+  const urls = await db.collection<"urls">("urls");
+  const existingUrl = urls
+    .find((url: HashedUrl) => url.hash === ctx.params!.hash)
+    .value();
+
+    return {
     redirect: {
       destination: existingUrl?.url ?? "/",
       permanent: false,

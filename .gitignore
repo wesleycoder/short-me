@@ -37,4 +37,4 @@ yarn-error.log*
 *.tsbuildinfo
 
 # Development database
-/db/db.json
+/db/**/*.json

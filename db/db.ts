@@ -1,24 +1,26 @@
-import { join, dirname } from "path";
-import { Low, JSONFile } from "lowdb";
-import { fileURLToPath } from "url";
-import { chain, ObjectChain } from "lodash";
+import { existsSync } from "fs";
+import { chain, CollectionChain, ObjectChain } from "lodash";
+import { Adapter, JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const dbFile = join(__dirname, "db.json");
-
-export interface HashedUrl {
-  url: string;
-  hash: string;
-}
+const dbFile = join(process.cwd(), "db", "db.json");
 
 export interface User {
   id: string;
   name: string;
   email: string;
   provider: string;
-  provider_user_token: string;
+  provider_token: string;
+}
+
+export interface HashedUrl {
+  url: string;
+  hash: string;
+  createdAt: Date;
+  accessCount?: number;
+  userId?: User["id"];
 }
 
 export interface Database {
@@ -26,11 +28,35 @@ export interface Database {
   users: User[];
 }
 
-type DBInstance = Low<Database> & { chain: ObjectChain<Database> };
+type DbKeys = keyof Database;
 
-export const db = new Low<Database>(new JSONFile(dbFile)) as DBInstance;
+type DBInstance = Low<Database> & {
+  /** populated after connection */
+  data: Database;
+  /** lodash chain wrapper for data */
+  chain: ObjectChain<Database>;
+  /** connects to the database and instantiates db.chain */
+  connect(): Promise<void>;
+  /** reads the database and finds the collection */
+  collection<T extends DbKeys>(
+    collection: DbKeys
+  ): Promise<CollectionChain<Database[T][0]>>;
+};
 
-export const connectDB = async () => {
+const dbSource: Adapter<Database> = existsSync(dbFile)
+  ? new JSONFile(dbFile)
+  : new Memory();
+
+export const db = new Low<Database>(dbSource) as DBInstance;
+
+db.collection = async function <T extends DbKeys>(
+  collection: DbKeys
+): Promise<CollectionChain<Database[T][0]>> {
+  await db.connect();
+  return db.chain.get(collection) as CollectionChain<Database[T][0]>;
+};
+
+db.connect = async function () {
   await db.read();
   db.data ||= {
     urls: [],
