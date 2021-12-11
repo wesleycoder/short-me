@@ -38,3 +38,12 @@ yarn-error.log*
 
 # Development database
 /db/**/*.json
+
+# Supabase
+**/supabase/.branches
+**/supabase/.temp
+**/supabase/.env
+
+# ENV files
+/.env
+/.env.*

@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^1.28.5",
     "@types/valid-url": "^1.0.3",
     "clsx": "^1.1.1",
     "is-domain-valid": "^1.2.0",

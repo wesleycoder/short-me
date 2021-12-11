@@ -26,7 +26,7 @@ export default async function shorten(
   const token = req.cookies.token;
   if (token) {
     const users = await db.collection<"users">("users");
-    user = users.find((u) => u.provider_token === token).value();
+    user = users.find((u) => u.token === token).value();
   }
   
   const urls = await db.collection<"urls">("urls");
@@ -38,8 +38,8 @@ export default async function shorten(
     const newUrl: HashedUrl = {
       url,
       hash: newId(),
-      accessCount: 0,
-      createdAt: new Date(),
+      access_count: 0,
+      created_at: new Date(),
     };
     db.data!.urls.push(newUrl);
     await db.write();

@@ -1,26 +1,32 @@
+import { createClient } from "@supabase/supabase-js";
 import { existsSync } from "fs";
 import { chain, CollectionChain, ObjectChain } from "lodash";
 import { Adapter, JSONFile, Low, Memory } from "lowdb";
 import { nanoid } from "nanoid";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
+import { join } from "path";
 
 const dbFile = join(process.cwd(), "db", "db.json");
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 export interface User {
   id: string;
-  name: string;
   email: string;
-  provider: string;
-  provider_token: string;
+  created_at: Date;
+  token: string;
+  last_sign_in_at: Date;
 }
 
 export interface HashedUrl {
   url: string;
   hash: string;
-  createdAt: Date;
-  accessCount?: number;
-  userId?: User["id"];
+  user_id?: User["id"];
+  access_count?: number;
+  public?: boolean;
+  created_at: Date;
 }
 
 export interface Database {

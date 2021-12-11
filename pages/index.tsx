@@ -128,15 +128,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
   if (token) {
     const users = await db.collection<"users">("users");
-    const user = users.find((u) => u.provider_token === token).value();
+    const user = users.find((u) => u.token === token).value();
 
     if (user) {
-      myUrls.concat(urls.filter((url) => url.userId === user.id).value());
+      myUrls.concat(urls.filter((url) => url.user_id === user.id).value());
     }
   }
 
   const recentUrls = urls
-    .sortBy((link) => link.accessCount)
+    .sortBy((link) => link.access_count)
     .take(10)
     .value();
 
