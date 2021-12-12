@@ -27,13 +27,16 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     .find((url: HashedUrl) => url.hash === ctx.params!.hash)
     .value();
 
-    return {
+  const url = existingUrl?.url ?? "/";
+  const destination = url.startsWith('http') ? url : `https://${url}`;
+
+  return {
     redirect: {
-      destination: existingUrl?.url ?? "/",
+      destination,
       permanent: false,
     },
     props: {
-      destination: existingUrl?.url ?? "/",
+      destination,
     },
   };
 };
