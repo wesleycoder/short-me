@@ -40,6 +40,7 @@ export default async function shorten(
       hash: newId(),
       access_count: 0,
       created_at: new Date(),
+      public: false,
     };
     db.data!.urls.push(newUrl);
     await db.write();

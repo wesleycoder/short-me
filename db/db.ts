@@ -10,7 +10,7 @@ const dbFile = join(process.cwd(), "db", "db.json");
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const dbClient = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface User {
   id: string;
@@ -25,7 +25,7 @@ export interface HashedUrl {
   hash: string;
   user_id?: User["id"];
   access_count?: number;
-  public?: boolean;
+  public: boolean;
   created_at: Date;
 }
 
