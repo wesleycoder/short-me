@@ -1,4 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 . "$(dirname "$0")/_/husky.sh"
 
+set -o allexport
+source .env
+set +o allexport
+
+npx openapi-typescript $NEXT_PUBLIC_SUPABASE_URL/rest/v1/?apikey=$NEXT_PUBLIC_SUPABASE_ANON_KEY --output types/database/index.ts
+npm run lint -- --fix
 npm test

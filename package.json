@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "echo 'No tests yet'",
-    "gen_types": "dotenv -- bash -c 'openapi-typescript $NEXT_PUBLIC_SUPABASE_URL/rest/v1/?apikey=$NEXT_PUBLIC_SUPABASE_ANON_KEY --output types/supabase.ts'",
+    "gen_types": "dotenv -- bash -c 'openapi-typescript $NEXT_PUBLIC_SUPABASE_URL/rest/v1/?apikey=$NEXT_PUBLIC_SUPABASE_ANON_KEY --output types/database/index.ts'",
     "postinstall": "husky install"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "@types/node": "16.11.9",
     "@types/react": "17.0.36",
     "dotenv-cli": "^4.1.1",
+    "dotenv-export": "^2.0.0",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.4",
     "husky": "^7.0.0",
