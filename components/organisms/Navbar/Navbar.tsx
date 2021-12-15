@@ -1,19 +1,32 @@
-import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
+import { dbClient } from "../../../db/db";
 
-const isLoggedIn = false;
+type anyFnReturn = any | void | Promise<any | void>;
 
-export const Navbar = () => (
-  <div className={styles.navbar}>
-    <Link href="/" passHref>
-      <a className={styles.logo} title="Short me">
-        🩳 Short me
-      </a>
-    </Link>
-    <ul className={styles.rightMenu}>
-      {isLoggedIn
-        ? (
+type Props = {
+  onLogin?: (provider: string) => anyFnReturn;
+  onLogout?: () => anyFnReturn;
+};
+
+export const Navbar = ({ onLogin = async () => {} }: Props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const user = dbClient.auth.user();
+    setIsLoggedIn(Boolean(user));
+  }, []);
+
+  return (
+    <div className={styles.navbar}>
+      <Link href="/" passHref>
+        <a className={styles.logo} title="Short me">
+          🩳 Short me
+        </a>
+      </Link>
+      <ul className={styles.rightMenu}>
+        {isLoggedIn ? (
           <li>
             <Link href="/profile">
               <a className={styles.rightMenuItem}>👤 Profile</a>
@@ -30,18 +43,36 @@ export const Navbar = () => (
               </li>
             </ul>
           </li>
-        )
-        : (
+        ) : (
           <li>
-            <Link href="/login">
-              <a className={styles.rightMenuItem}>👤 Login</a>
-            </Link>
+            <span className={styles.rightMenuItem}>👤 Login</span>
             <ul className={styles.dropdown}>
-              <li>Login with Google</li>
-              <li>Login with Github</li>
+              <li>
+                <button
+                  className={styles.rightMenuItem}
+                  onClick={async () => {
+                    await onLogin("google");
+                    setIsLoggedIn(true);
+                  }}
+                >
+                  Login with Google
+                </button>
+              </li>
+              <li>
+                <button
+                  className={styles.rightMenuItem}
+                  onClick={async () => {
+                    await onLogin("github");
+                    setIsLoggedIn(true);
+                  }}
+                >
+                  Login with Github
+                </button>
+              </li>
             </ul>
           </li>
         )}
-    </ul>
-  </div>
-);
+      </ul>
+    </div>
+  );
+};
