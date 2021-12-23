@@ -5,22 +5,23 @@ import Link from "next/link";
 import { FormEventHandler, useCallback, useState } from "react";
 import { Navbar, TextInput } from "../components";
 import { LinkList } from "../components/organisms/LinkList/LinkList";
-import { db, HashedUrl } from "../db";
 import { getRequestHostUrl, validateUrl } from "../utils";
 import { useHostURL } from "../utils/hooks/useHostUrl";
 import styles from "./Home.module.css";
+import { dbClient } from "../db/db";
+import type { definitions } from "../types/database/index";
 
 interface Props {
   host?: string;
-  recentUrls: HashedUrl[];
-  myUrls: HashedUrl[];
+  recentUrls: definitions["urls"][];
+  myUrls: definitions["urls"][];
 }
 
 const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
   const hostPrefix = useHostURL(host);
   const [url, setUrl] = useState("");
   const [isValid, setIsValid] = useState(true);
-  const [shortened, setShortened] = useState<HashedUrl | null>(null);
+  const [shortened, setShortened] = useState<definitions["urls"] | null>(null);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -32,7 +33,7 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url }),
         });
-        const shortenedUrl: HashedUrl = await response.json();
+        const shortenedUrl: definitions["urls"] = await response.json();
         setShortened(shortenedUrl);
       }
     },
@@ -47,7 +48,11 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
         <link rel="icon" href="/short.png" />
       </Head>
 
-      <Navbar />
+      <Navbar
+        onLogin={(...args: any[]) => {
+          console.log(...args);
+        }}
+      />
 
       <div className={styles.container}>
         <h1 className={styles.title} title="Short me">
@@ -121,24 +126,30 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const host = `${getRequestHostUrl(ctx.req).origin}/`;
-  const urls = await db.collection<"urls">("urls");
-  const myUrls: HashedUrl[] = [];
+  const recentUrlsResponse = await dbClient
+    .from<definitions["urls"]>("urls")
+    .select()
+    .or('public.is.true,user_id.is.null')
+    .limit(10);
+
+  const recentUrls = recentUrlsResponse.data || [];
+  const myUrls: definitions["urls"][] = [];
 
   const token = ctx.req.cookies.token;
 
   if (token) {
-    const users = await db.collection<"users">("users");
-    const user = users.find((u) => u.token === token).value();
-
+    const user = await dbClient.auth.user();
     if (user) {
-      myUrls.concat(urls.filter((url) => url.user_id === user.id).value());
+      const myUrlsResponse = await dbClient
+        .from<definitions["urls"]>("urls")
+        .select()
+        .eq("user_id", user.id)
+        .order("created_at")
+        .limit(10);
+
+      myUrls.concat(myUrlsResponse.data || []);
     }
   }
-
-  const recentUrls = urls
-    .sortBy((link) => link.access_count)
-    .take(10)
-    .value();
 
   return {
     props: {

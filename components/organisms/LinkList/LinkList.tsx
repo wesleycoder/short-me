@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { ComponentProps } from "react";
-import { HashedUrl } from "../../../db";
-import { useHostURL } from "../../../utils/hooks/useHostUrl";
 import styles from "./LinkList.module.css";
+import type { definitions } from "../../../types/database";
 
 interface Props extends ComponentProps<"ul"> {
-  links: HashedUrl[];
+  links: definitions["urls"][];
 }
 
 export const LinkList = ({ links = [], ...props }: Props) => {
-  const host = useHostURL();
   return (
     <ul {...props} className={styles.linkList}>
       {links.map(({ url, hash }) => (
