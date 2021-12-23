@@ -19,11 +19,12 @@ export interface paths {
           id?: parameters["rowFilter.urls.id"];
           url?: parameters["rowFilter.urls.url"];
           hash?: parameters["rowFilter.urls.hash"];
-          access_count?: parameters["rowFilter.urls.access_count"];
           user_id?: parameters["rowFilter.urls.user_id"];
+          public?: parameters["rowFilter.urls.public"];
+          access_count?: parameters["rowFilter.urls.access_count"];
+          last_access_at?: parameters["rowFilter.urls.last_access_at"];
           created_at?: parameters["rowFilter.urls.created_at"];
           updated_at?: parameters["rowFilter.urls.updated_at"];
-          public?: parameters["rowFilter.urls.public"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -77,11 +78,12 @@ export interface paths {
           id?: parameters["rowFilter.urls.id"];
           url?: parameters["rowFilter.urls.url"];
           hash?: parameters["rowFilter.urls.hash"];
-          access_count?: parameters["rowFilter.urls.access_count"];
           user_id?: parameters["rowFilter.urls.user_id"];
+          public?: parameters["rowFilter.urls.public"];
+          access_count?: parameters["rowFilter.urls.access_count"];
+          last_access_at?: parameters["rowFilter.urls.last_access_at"];
           created_at?: parameters["rowFilter.urls.created_at"];
           updated_at?: parameters["rowFilter.urls.updated_at"];
-          public?: parameters["rowFilter.urls.public"];
         };
         header: {
           /** Preference */
@@ -99,11 +101,12 @@ export interface paths {
           id?: parameters["rowFilter.urls.id"];
           url?: parameters["rowFilter.urls.url"];
           hash?: parameters["rowFilter.urls.hash"];
-          access_count?: parameters["rowFilter.urls.access_count"];
           user_id?: parameters["rowFilter.urls.user_id"];
+          public?: parameters["rowFilter.urls.public"];
+          access_count?: parameters["rowFilter.urls.access_count"];
+          last_access_at?: parameters["rowFilter.urls.last_access_at"];
           created_at?: parameters["rowFilter.urls.created_at"];
           updated_at?: parameters["rowFilter.urls.updated_at"];
-          public?: parameters["rowFilter.urls.public"];
         };
         body: {
           /** urls */
@@ -123,6 +126,7 @@ export interface paths {
 }
 
 export interface definitions {
+  /** Hashed urls */
   urls: {
     /**
      * Note:
@@ -131,11 +135,12 @@ export interface definitions {
     id: string;
     url: string;
     hash: string;
-    access_count: number;
     user_id?: string;
-    created_at?: string;
-    updated_at?: string;
     public: boolean;
+    access_count: number;
+    last_access_at?: string;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -165,11 +170,12 @@ export interface parameters {
   "rowFilter.urls.id": string;
   "rowFilter.urls.url": string;
   "rowFilter.urls.hash": string;
-  "rowFilter.urls.access_count": string;
   "rowFilter.urls.user_id": string;
+  "rowFilter.urls.public": string;
+  "rowFilter.urls.access_count": string;
+  "rowFilter.urls.last_access_at": string;
   "rowFilter.urls.created_at": string;
   "rowFilter.urls.updated_at": string;
-  "rowFilter.urls.public": string;
 }
 
 export interface operations {}

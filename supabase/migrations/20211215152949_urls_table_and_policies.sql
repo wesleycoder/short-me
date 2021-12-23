@@ -8,10 +8,12 @@ CREATE TABLE IF NOT EXISTS public.urls
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     url text COLLATE pg_catalog."default" NOT NULL,
     hash text COLLATE pg_catalog."default" NOT NULL,
-    access_count bigint NOT NULL DEFAULT '0'::bigint,
     user_id uuid,
-    created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
-    updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
+    public boolean NOT NULL DEFAULT true,
+    access_count bigint NOT NULL DEFAULT '0'::bigint,
+    last_access_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+    updated_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
     CONSTRAINT urls_pkey PRIMARY KEY (id),
     CONSTRAINT urls_hash_key UNIQUE (hash),
     CONSTRAINT urls_user_id_fkey FOREIGN KEY (user_id)
@@ -23,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.urls
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.urls
-    OWNER to supabase_admin;
+    OWNER to postgres;
 
 ALTER TABLE IF EXISTS public.urls
     ENABLE ROW LEVEL SECURITY;
@@ -36,22 +38,26 @@ GRANT ALL ON TABLE public.urls TO postgres;
 
 GRANT ALL ON TABLE public.urls TO service_role;
 
-GRANT ALL ON TABLE public.urls TO supabase_admin;
-
 COMMENT ON TABLE public.urls
-    IS 'Urls';
-CREATE POLICY "Enable access to public links for all users"
-    ON public.urls
-    AS PERMISSIVE
-    FOR SELECT
-    TO public
-    USING ((user_id IS NULL));
+    IS 'Hashed urls';
 CREATE POLICY "Enable delete for users based on user_id"
     ON public.urls
     AS PERMISSIVE
     FOR DELETE
     TO public
     USING ((auth.uid() = user_id));
+CREATE POLICY "Enable insert for all users"
+    ON public.urls
+    AS PERMISSIVE
+    FOR INSERT
+    TO public
+    WITH CHECK (true);
+CREATE POLICY "Enable read access to all users for public urls"
+    ON public.urls
+    AS PERMISSIVE
+    FOR SELECT
+    TO public
+    USING ((public = true));
 CREATE POLICY "Enable update for users based on user_id"
     ON public.urls
     AS PERMISSIVE
