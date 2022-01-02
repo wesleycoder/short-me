@@ -1,28 +1,4 @@
-#!/usr/bin/env zx
-import "colors";
-import "dotenv/config";
-import task from "tasuku";
-import { $ } from "zx";
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-$.verbose = false;
-
-await task("Initialize husky", async () => {
-  await $`husky_skip_init=1 . "${__dirname}/_/husky.sh"`;
-});
-
-task("Lint code", async () => {
-  await $`npm run lint -- --fix`;
-});
-
-await task("Try to update DB types", async (t) => {
-  const exitCode = await nothrow(
-    $`npx openapi-typescript $NEXT_PUBLIC_SUPABASE_URL/rest/v1/?apikey=$NEXT_PUBLIC_SUPABASE_ANON_KEY --output types/database/index.ts`
-  ).exitCode;
-
-  t.setTitle(`Update DB types`.strikethrough);
-  t.setStatus(exitCode === 0 ? "ok" : "error");
-});
-
-await task("Unit tests", async () => {
-  await $`npm test`;
-});
+scripts/pre-commit.mjs
