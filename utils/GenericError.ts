@@ -1,13 +1,17 @@
-interface GenericErrorOptions extends ErrorOptions {
-  type: string;
+type GenericErrorOptions = {
+  name?: string;
+  message?: string;
+  type?: string;
 }
 
-export class GenericError extends Error {
-  options: GenericErrorOptions = { type: "Error" };
+const DEFAULT_ERROR_NAME = "GenericError"
 
-  constructor(message: string, options?: GenericErrorOptions) {
-    super(message, options);
-    this.name = options?.type ?? "Error";
+export class GenericError extends Error {
+  options: GenericErrorOptions = { type: DEFAULT_ERROR_NAME };
+
+  constructor(message: string, options: GenericErrorOptions = {}) {
+    super(message);
+    this.name = options?.type ?? DEFAULT_ERROR_NAME;
     this.options = {
       ...this.options,
       ...options,
