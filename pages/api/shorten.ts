@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { validateUrl } from "../../utils";
 import type { definitions } from "../../types/database";
 import { dbClient } from "../../db/db";
-import { nanoid } from 'nanoid';
+import { nanoid } from "nanoid";
+import { PostgrestError } from "@supabase/supabase-js";
+import { RequestError } from "../../utils/Errors";
 
 interface NextRequestWithBody extends NextApiRequest {
   body: {
@@ -14,7 +16,9 @@ interface NextRequestWithBody extends NextApiRequest {
 type Data =
   | definitions["urls"]
   | {
-      error: string;
+      ok: boolean;
+      statusText?: string;
+      error: PostgrestError | Error | null;
     };
 
 export default async function shorten(
@@ -24,23 +28,29 @@ export default async function shorten(
   const { url, public: isPublic = true } = req.body;
 
   if (!url) {
-    return res.status(400).json({ error: "url is required" });
+    return res
+      .status(400)
+      .json({ ok: false, error: new RequestError("url is required") });
   }
 
   if (!validateUrl(url)) {
-    return res.status(400).json({ error: "url is invalid" });
+    return res.json({ ok: false, error: new RequestError("url is invalid") });
   }
 
-  const headers = req.headers;
-  console.log(headers);
+  const {
+    data: existentUrl,
+    status,
+    statusText,
+    error,
+  } = await dbClient
+    .from<definitions["urls"]>("urls")
+    .select()
+    .eq("url", url)
+    .single();
 
-  const existentUrl = (
-    await dbClient
-      .from<definitions["urls"]>("urls")
-      .select()
-      .eq("url", url)
-      .single()
-  ).data;
+  if (status !== 200) {
+    return res.status(status).json({ ok: status === 200, statusText, error });
+  }
 
   if (existentUrl) {
     res.status(200).json(existentUrl);

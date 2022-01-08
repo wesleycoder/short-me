@@ -2,12 +2,12 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 import { dbClient } from "../../db";
 import { definitions } from "../../types/database/index";
-import { GenericError } from "../../utils/GenericError";
+import { RequestError } from "../../utils/Errors";
 
 type Data = {
   ok: boolean;
-  statusText: string;
-  error: PostgrestError | GenericError | null;
+  statusText?: string;
+  error: PostgrestError | Error | null;
 };
 
 export default async function postClear(
@@ -18,7 +18,7 @@ export default async function postClear(
     return res.status(405).json({
       ok: false,
       statusText: "Method not Allowed",
-      error: new GenericError("Method not Allowed", { type: "RequestError" }),
+      error: new RequestError("Method not Allowed"),
     });
   }
 
