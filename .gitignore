@@ -47,3 +47,5 @@ yarn-error.log*
 # ENV files
 /.env
 /.env.*
+
+types/database/index.ts
