@@ -1,6 +1,5 @@
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from "next";
 import { useRouter } from "next/dist/client/router";
-import { ParsedUrlQuery } from "querystring";
 import { dbClient } from "../../db";
 import { definitions } from "../../types/database/index";
 

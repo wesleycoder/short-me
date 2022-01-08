@@ -47,6 +47,3 @@ yarn-error.log*
 # ENV files
 /.env
 /.env.*
-
-# Typescript destination (for testing)
-/dist

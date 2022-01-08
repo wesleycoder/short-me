@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
+const nextConfig = {
   reactStrictMode: true,
+  experimental: { esmExternals: true },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -10,3 +11,5 @@ module.exports = {
     return config;
   },
 };
+
+export default nextConfig;
