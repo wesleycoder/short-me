@@ -1,4 +1,4 @@
-import throttle from "lodash/throttle";
+import React from "react";
 import {
   ChangeEvent,
   ComponentProps,
@@ -6,65 +6,45 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
+import { DebounceInput } from "react-debounce-input";
 
 interface Props extends ComponentProps<"input"> {
+  value?: string;
   delay?: number;
   defaultValue?: string;
   validate?: (value: string) => boolean;
-  onChangeText: (value: string) => any | void;
-  onValidate: (valid: boolean) => any | void;
+  onChangeText?: (value: string) => any | void;
+  onValidate?: (valid: boolean) => any | void;
 }
 
 type InputChangeEvent = ChangeEvent<HTMLInputElement>;
 
-const useThrottledOnChange = (
-  onChange: EventHandler<InputChangeEvent>,
-  delay: number = 300,
-  onAllChanges: EventHandler<InputChangeEvent> = () => {},
-) => {
-  const handler = useMemo(() =>
-    throttle(onChange, delay), [
-    delay,
-    onChange,
-  ]);
-
-  const handleAll = useCallback(
-    (event: InputChangeEvent) => {
-      handler(event);
-      onAllChanges(event);
-    },
-    [handler, onAllChanges],
-  );
-
-  useEffect(() => handler.cancel, [handler]);
-
-  return handleAll;
-};
-
-export function TextInput(
-  {
-    type = "text",
-    defaultValue = "",
-    delay = 500,
-    validate = () => true,
-    onChangeText = () => {},
-    onValidate = () => {},
-    autoFocus = false,
-    ...props
-  }: Props,
-) {
+export function TextInput({
+  type = "text",
+  defaultValue = "",
+  delay = 500,
+  validate = () => true,
+  onChangeText = () => {},
+  onValidate = () => {},
+  autoFocus = false,
+  ...props
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isValid, setIsValid] = useState(
-    () => (defaultValue ? validate(defaultValue) : true),
+  const [isValid, setIsValid] = useState(() =>
+    defaultValue ? validate(defaultValue) : true
   );
 
   const onChange: EventHandler<InputChangeEvent> = useCallback(
-    ({ target: { value } }) => onChangeText(value),
-    [onChangeText],
+    ({ target: { value } }) => {
+      onChangeText(value);
+      const valid = validate(value);
+      setIsValid(valid);
+      onValidate(valid);
+    },
+    [onChangeText, onValidate, validate]
   );
 
   const onKeyPress: KeyboardEventHandler<HTMLInputElement> = useCallback(
@@ -73,47 +53,23 @@ export function TextInput(
         event.preventDefault();
       }
     },
-    [isValid],
+    [isValid]
   );
 
-  useEffect(
-    () => {
-      if (autoFocus) {
-        inputRef.current?.focus();
-      }
-    },
-    [autoFocus],
-  );
-
-  const throttledValidate = useMemo(
-    () => throttle(onValidate, delay, { leading: false }),
-    [delay, onValidate],
-  );
-
-  const onAllChanges: EventHandler<InputChangeEvent> = useCallback(
-    ({ target: { value } }: InputChangeEvent) => {
-      const valid = validate(value);
-
-      if (isValid !== valid) {
-        throttledValidate(valid);
-      }
-
-      setIsValid(valid);
-    },
-    [throttledValidate, isValid, validate],
-  );
-
-  const debouncedHandler = useThrottledOnChange(onChange, delay, onAllChanges);
+  useEffect(() => {
+    if (autoFocus) {
+      inputRef.current?.focus();
+    }
+  }, [autoFocus]);
 
   return (
-    <input
-      {...props}
-      ref={inputRef}
+    <DebounceInput
+      {...(props as DebounceInput<HTMLInputElement>)}
+      debounceTimeout={delay}
       autoFocus={autoFocus}
       formNoValidate
       type={type}
-      defaultValue={defaultValue}
-      onChange={debouncedHandler}
+      onChange={onChange}
       onKeyPress={onKeyPress}
     />
   );
