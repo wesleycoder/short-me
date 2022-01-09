@@ -14,11 +14,12 @@ const Redirect: NextPage<{ destination: string }> = ({ destination }) => {
 };
 
 export const getStaticPaths = async () => {
-  const urls =
-    (await dbClient.from<definitions["urls"]>("urls").select()).data || [];
+  const { data: urls = [] } = await dbClient
+    .from<definitions["urls"]>("urls")
+    .select();
 
   return {
-    paths: urls.map((url) => `/${url.hash}`),
+    paths: urls!.map((url) => `/${url.hash}`),
     fallback: true,
   };
 };
@@ -29,12 +30,14 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   if (
     ctx.params?.hash &&
     typeof ctx.params.hash === "string" &&
-    /^[a-zA-Z0-9]{6}$/.test(ctx.params.hash)
+    /^[a-zA-Z0-9_-]{14}$/.test(ctx.params.hash)
   ) {
-    const urls =
-      (await dbClient.from<definitions["urls"]>("urls").select()).data || [];
-    const existingUrl = urls.find((url) => url.hash === ctx.params?.hash);
-  
+    const { data: existingUrl } = await dbClient
+      .from<definitions["urls"]>("urls")
+      .select("url")
+      .eq("hash", ctx.params.hash)
+      .maybeSingle();
+
     url = existingUrl?.url ?? "/";
   }
 

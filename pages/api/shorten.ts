@@ -46,7 +46,7 @@ export default async function shorten(
     .from<definitions["urls"]>("urls")
     .select()
     .eq("url", url)
-    .single();
+    .maybeSingle();
 
   if (status !== 200) {
     return res.status(status).json({ ok: status === 200, statusText, error });
@@ -55,20 +55,22 @@ export default async function shorten(
   if (existentUrl) {
     res.status(200).json(existentUrl);
   } else {
-    const newUrl: Omit<definitions["urls"], "id"> = {
+    const newUrl: Omit<
+      definitions["urls"],
+      "id" | "last_access_at" | "created_at" | "updated_at"
+    > = {
       url,
       hash: nanoid(14),
       access_count: 0,
       public: isPublic,
       user_id: dbClient.auth.user()?.id,
-      last_access_at: new Date().toTimeString(),
-      created_at: new Date().toTimeString(),
-      updated_at: new Date().toTimeString(),
     };
     dbClient.from<definitions["urls"]>("urls").insert(newUrl);
-    const hashedUrl = (
-      await dbClient.from<definitions["urls"]>("urls").insert(newUrl).single()
-    ).data as definitions["urls"];
-    res.status(200).json(hashedUrl);
+    const { data: hashedUrl } = await dbClient
+      .from<definitions["urls"]>("urls")
+      .insert(newUrl)
+      .single();
+
+    res.status(200).json(hashedUrl!);
   }
 }

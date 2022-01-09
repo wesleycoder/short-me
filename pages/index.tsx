@@ -34,6 +34,7 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
           body: JSON.stringify({ url }),
         });
         const shortenedUrl: definitions["urls"] = await response.json();
+        setUrl("");
         setShortened(shortenedUrl);
       }
     },
@@ -50,7 +51,7 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
 
       <Navbar
         onLogin={(...args: any[]) => {
-          console.log(...args);
+          // console.log(...args);
         }}
       />
 
@@ -75,7 +76,7 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
               type="url"
               required
               autoFocus
-              defaultValue={url}
+              value={url}
               onChangeText={setUrl}
               onValidate={setIsValid}
               validate={validateUrl}
@@ -98,15 +99,6 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
           </>
         )}
 
-        <button
-          type="button"
-          className={styles.button}
-          onClick={() => {
-            fetch("/api/clear", { method: "POST" });
-          }}
-        >
-          Reset
-        </button>
         {Boolean(recentUrls.length) && (
           <>
             <h2 className={styles.linksTitle}>Popular public links:</h2>
