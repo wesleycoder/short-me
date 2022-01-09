@@ -5,9 +5,25 @@ import { TextInput } from "../TextInput";
 
 describe("TextInput", () => {
   it("should render", () => {
+    const label = "Text input";
     const { getByLabelText } = render(
-      <TextInput aria-label="Text input" value={""} />
+      <TextInput aria-label={label} value={""} />
     );
-    expect(getByLabelText("Text input")).toBeTruthy();
+    const input = getByLabelText(label);
+    expect(input).toBeTruthy();
+    expect(input).toHaveProperty("value", "");
+    expect(input).toMatchSnapshot();
+  });
+
+  it("should render with initial text", () => {
+    const label = "Text input";
+    const value = "Initial text";
+    const { getByLabelText } = render(
+      <TextInput aria-label={label} value={value} />
+    );
+    const input = getByLabelText(label);
+    expect(input).toBeTruthy();
+    expect(input).toHaveProperty("value", value);
+    expect(input).toMatchSnapshot();
   });
 });

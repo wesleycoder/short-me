@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextInput should render 1`] = `
+<input
+  aria-label="Text input"
+  formnovalidate=""
+  type="text"
+  value=""
+/>
+`;
+
+exports[`TextInput should render with initial text 1`] = `
+<input
+  aria-label="Text input"
+  formnovalidate=""
+  type="text"
+  value="Initial text"
+/>
+`;
