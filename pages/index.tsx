@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -81,7 +80,6 @@ const Home: NextPage<Props> = ({ host, recentUrls, myUrls }) => {
               onValidate={setIsValid}
               validate={validateUrl}
               placeholder={hostPrefix}
-              className={clsx(styles.input, !isValid && styles.invalid)}
             />
             <button disabled={!isValid} type="submit" className={styles.button}>
               Shorten
@@ -121,7 +119,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const recentUrlsResponse = await dbClient
     .from<definitions["urls"]>("urls")
     .select()
-    .or('public.is.true,user_id.is.null')
+    .or("public.is.true,user_id.is.null")
     .limit(10);
 
   const recentUrls = recentUrlsResponse.data || [];

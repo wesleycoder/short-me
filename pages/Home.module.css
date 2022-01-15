@@ -38,22 +38,6 @@
   padding: 1rem;
 }
 
-.form .input {
-  border-radius: 15px 0 0 15px;
-  background-color: antiquewhite;
-  outline: none;
-  min-width: 360px;
-}
-
-.form .input:focus {
-  outline: 1px solid burlywood;
-}
-
-.form .input.invalid {
-  outline: 2px solid crimson;
-  background-color: mistyrose;
-}
-
 .form .button {
   border-radius: 0 15px 15px 0;
   background-color: burlywood;

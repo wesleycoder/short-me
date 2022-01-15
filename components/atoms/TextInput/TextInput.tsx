@@ -1,5 +1,5 @@
-import React from "react";
-import {
+import clsx from "clsx";
+import React, {
   ChangeEvent,
   ComponentProps,
   EventHandler,
@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { DebounceInput } from "react-debounce-input";
+import styles from "./TextInput.module.css";
 
 interface Props extends ComponentProps<"input"> {
   value?: string;
@@ -71,6 +72,7 @@ export function TextInput({
       type={type}
       onChange={onChange}
       onKeyPress={onKeyPress}
+      className={clsx(styles.textInput, !isValid && styles.invalid)}
     />
   );
 }

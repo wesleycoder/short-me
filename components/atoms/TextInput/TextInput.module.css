@@ -1,0 +1,15 @@
+.textInput {
+  border-radius: 15px 0 0 15px;
+  background-color: antiquewhite;
+  outline: none;
+  min-width: 360px;
+}
+
+.textInput:focus {
+  outline: 1px solid burlywood;
+}
+
+.textInput.invalid {
+  outline: 2px solid crimson;
+  background-color: mistyrose;
+}
